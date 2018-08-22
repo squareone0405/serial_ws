@@ -81,6 +81,7 @@ void Communication::receive_mavlink_send_imu()
 			//ROS_INFO("mavline cannot parse char, receiver returning ...");
 			continue ;
 		}
+		server->addMsg(mavlink_msg);
 		//ROS_INFO("mavlink parsed char");
 		switch (mavlink_msg.msgid)
 		{

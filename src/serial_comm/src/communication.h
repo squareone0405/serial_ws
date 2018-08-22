@@ -7,7 +7,7 @@
 #include <sensor_msgs/Imu.h>
 #include <tf/tfMessage.h>
 #include <tf/transform_broadcaster.h>
-
+#include "udpserver.h"
 #include "simple_comm/simple_serial_port.h"
 
 class Communication
@@ -19,10 +19,12 @@ public:
 		tf_sub = n.subscribe("tf", 1000, &Communication::Callback, this);
 		offboard_mode_pub = n.advertise<std_msgs::Int32>("offboard_mode_msg",1000);
 		ctrl_sub = n.subscribe("keyboard_control_msg", 1000, &Communication::Callback_ctrl, this);
+		server = new udpserver();
 	}
 	
 	void start()
 	{
+		server->start();
 		while (ros::ok())
 		{
 			Process(nullptr);
@@ -46,7 +48,7 @@ private:
 	void receive_mavlink_send_imu();
 	void print_local_position(mavlink_local_position_ned_t& local_position);
 	SimpleSerialPort *serial_port;
-
+	udpserver *server;
 	float delta_x= 0;
 	float delta_y= 0;
 	float delta_z= 0;
