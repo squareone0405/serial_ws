@@ -24,6 +24,7 @@
 
 udpserver::udpserver(unsigned int port) : listen_port(port)
 {
+    memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(listen_port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -32,6 +33,7 @@ udpserver::udpserver(unsigned int port) : listen_port(port)
 udpserver::~udpserver()
 {
     stop = true;
+    close(sock);
     if (!started)
         return;
     if (handlerThread.joinable())
@@ -85,7 +87,7 @@ void udpserver::handler()
             }
         }
         // sleep for 1ms
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
