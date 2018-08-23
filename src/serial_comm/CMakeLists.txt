@@ -206,7 +206,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 add_definitions(${EIGEN_DEFINITIONS})
 add_definitions(-std=c++11)
 
-add_executable(tf_subscriber src/tf_subscriber.cpp src/simple_comm/simple_serial_port.cpp src/communication.cpp src/coordinate.cpp)
+add_executable(tf_subscriber src/tf_subscriber.cpp src/simple_comm/simple_serial_port.cpp src/communication.cpp src/coordinate.cpp src/udpserver.cpp)
 target_link_libraries(tf_subscriber ${catkin_LIBRARIES})
 
 #add_executable(xrosnode src/xrosnode.cpp)#src/simple_comm/simple_serial_port.cpp src/communication.cpp)

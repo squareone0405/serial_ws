@@ -36,7 +36,7 @@ class udpserver
     std::thread handlerThread;
     void handler();
   public:
-    udpserver(int listen_port = 14555);
+    udpserver(unsigned int listen_port = 14555);
     virtual ~udpserver();
     bool start();
     bool isStart() const;

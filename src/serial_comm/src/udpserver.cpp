@@ -6,6 +6,7 @@
 */
 
 #include "udpserver.h"
+#include <functional>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -18,6 +19,7 @@
 #include <time.h>
 #include <arpa/inet.h>
 #include <linux/ip.h>
+#include "ros/ros.h"
 #include "../include/mavlink/v1.0/common/mavlink.h"
 
 udpserver::udpserver(unsigned int port) : listen_port(port)
@@ -40,13 +42,13 @@ bool udpserver::start()
 {
     if (sock = socket(AF_INET, SOCK_DGRAM, 0) < 0)
     {
-        fprintf("Error create socket.\n");
-        throw exception("Error create socket.");
+        ROS_ERROR("Error create socket.\n");
+        throw "Error create socket.";
         return false;
     }
     if (bind(sock, (sockaddr *)&addr, sizeof(addr)) < 0)
     {
-        fprintf("Failed to bind the port.\n");
+        ROS_ERROR("Failed to bind the port.\n");
         exit(EXIT_FAILURE);
         return false;
     }
@@ -69,16 +71,17 @@ void udpserver::handler()
     {
         if (stop)
             break;
-        int n = recvfrom(sock, recvBuffer, 512, 0, (socketaddr *)&clientAddr, sizeof(clientAddr));
+        unsigned int curr_sockaddr_len = sizeof(sockaddr);
+        int n = recvfrom(sock, (void *)recvBuffer, 512, 0, (struct sockaddr *)&clientAddr, &curr_sockaddr_len);
         if (n > 0)
         {
             if (!msg_q.empty())
             {
                 // read from queue
-                mavlink_message_t &&data = msg_q.front();
+                mavlink_message_t msg = msg_q.front();
                 msg_q.pop_front();
-                unsigned int len = mavlink_msg_to_send_buffer((unsigned char*)sendBuffer,&msg);
-                sendto(sock, sendBuffer, len, 0, (socketaddr *)&clientAddr, sizeof(clientAddr));
+                unsigned int len = mavlink_msg_to_send_buffer((unsigned char *)sendBuffer, &msg);
+                sendto(sock, sendBuffer, len, 0, (struct sockaddr *)&clientAddr, sizeof(struct sockaddr_in));
             }
         }
         // sleep for 1ms
@@ -89,7 +92,7 @@ void udpserver::handler()
 void udpserver::addMsg(const mavlink_message_t &msg)
 {
     // set max limit here
-    if (msq_q.size() == 1000)
+    if (msg_q.size() == 1000)
     {
         msg_q.pop_front();
     }
