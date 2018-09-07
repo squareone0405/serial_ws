@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 			SimpleSerialPort::enableSerial();
 		}
 	}
-	ros::init(argc, argv, "tf_subscriber3");
+	ros::init(argc, argv, "tf_subscriber");
 	ros::NodeHandle n;
 	// initialize serial port
 	SimpleSerialPort *serial_port = SimpleSerialPort::getInstance();

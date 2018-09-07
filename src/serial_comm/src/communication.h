@@ -16,10 +16,10 @@ class Communication
 public:
 	Communication(ros::NodeHandle &n)
 	{
-		imu_pub = n.advertise<sensor_msgs::Imu>("imu3", 1000);
-		tf_sub = n.subscribe("tf3", 1000, &Communication::Callback, this);
-		offboard_mode_pub = n.advertise<std_msgs::Int32>("offboard_mode_msg3",1000);
-		velocity_sub = n.subscribe("path_planning3", 1000, &Communication::Callback_v, this);
+		imu_pub = n.advertise<sensor_msgs::Imu>("imu", 1000);
+		tf_sub = n.subscribe("tf", 1000, &Communication::Callback, this);
+		offboard_mode_pub = n.advertise<std_msgs::Int32>("offboard_mode_msg",1000);
+		velocity_sub = n.subscribe("path_planning", 1000, &Communication::Callback_v, this);
 	}
 	
 	void start()
