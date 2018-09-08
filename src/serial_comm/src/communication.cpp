@@ -270,6 +270,15 @@ void Communication::send_tf_msg(const tf::tfMessage::ConstPtr *tf_msg)
 			//serial_port->sendBytes(serial_port_send_buffer, send_length);
 			cout<<"estimate send"<<endl;
 		}
+
+		// send vision position and local_z
+		static tf::TransformBroadcaster br;
+		tf::Transform transform;
+		transform.setOrigin(tf::Vector3(data.translation.x, data.translation.y, local_z));
+		transform.setRotation(tf::Quaternion(data.rotation.x, data.rotation.y, data.rotation.z, data.rotation.w));
+		br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "curr_position"));
+		br.sendTransform(tf::StampedTransform());
+		cout<<"curr_position send"<<endl;
 	}
 }
 
